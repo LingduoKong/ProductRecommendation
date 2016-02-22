@@ -1,6 +1,7 @@
 package com.LingduoKong.app;
 
 import com.squareup.okhttp.OkHttpClient;
+import junit.framework.TestCase;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,9 +10,9 @@ import org.junit.Test;
 /**
  * Created by lingduokong on 2/21/16.
  */
-public class ReviewQueryTest {
+public class ReviewQueryTest extends TestCase {
 
-    Query reviewQuery;
+    ReviewQuery reviewQuery;
 
     @Before
     public void setUp() throws Exception {
@@ -20,11 +21,11 @@ public class ReviewQueryTest {
 
     @Test
     public void testParse() throws Exception {
-        Assert.assertEquals(null, reviewQuery.parse("abcde"));
+        Assert.assertEquals(null, reviewQuery.getReviewStats("abcde"));
         JSONObject review = new JSONObject();
-        Assert.assertEquals(null, reviewQuery.parse(review.toString()));
+        Assert.assertEquals(null, reviewQuery.getReviewStats(review.toString()));
         review.put("name", "itemName");
-        Assert.assertEquals(reviewQuery.parse(review.toString()).toString(),
+        Assert.assertEquals(reviewQuery.getReviewStats(review.toString()).toString(),
                 review.put("totalReviewCount", 0).put("averageOverallRating",-1.0).toString());
 
 
@@ -37,6 +38,6 @@ public class ReviewQueryTest {
 
         review.put("totalReviewCount", 100);
         review.put("averageOverallRating", 4.45);
-        Assert.assertEquals(review.toString(), reviewQuery.parse(review2.toString()).toString());
+        Assert.assertEquals(review.toString(), reviewQuery.getReviewStats(review2.toString()).toString());
     }
 }

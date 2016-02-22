@@ -14,8 +14,7 @@ public class SearchQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    @Override
-    public JSONObject parse(String response) {
+    public JSONObject getFirstSearchResult(String response) {
 
         JSONObject jsonObject;
 

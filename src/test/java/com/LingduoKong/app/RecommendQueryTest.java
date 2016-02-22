@@ -1,6 +1,7 @@
 package com.LingduoKong.app;
 
 import com.squareup.okhttp.OkHttpClient;
+import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -10,9 +11,9 @@ import org.junit.Test;
 /**
  * Created by lingduokong on 2/21/16.
  */
-public class RecommendQueryTest {
+public class RecommendQueryTest extends TestCase {
 
-    Query recommendQuery;
+    RecommendationQuery recommendQuery;
 
     @Before
     public void setUp() throws Exception {
@@ -22,21 +23,21 @@ public class RecommendQueryTest {
 
     @Test
     public void testParse() throws Exception {
-        JSONObject test1 = new JSONObject();
-        Assert.assertEquals(null, recommendQuery.parse(test1.toString()));
+        JSONArray test1 = new JSONArray();
+        Assert.assertEquals(null, recommendQuery.top10Items(test1.toString()));
         JSONArray items = new JSONArray();
-        Assert.assertEquals(null, recommendQuery.parse(items.toString()));
+        Assert.assertEquals(null, recommendQuery.top10Items(items.toString()));
         for (int i = 0; i < 5; i++) {
             items.put(new JSONObject());
         }
         Assert.assertEquals(items.length(),
-                recommendQuery.parse(items.toString()).getJSONArray("recommend").length());
+                recommendQuery.top10Items(items.toString()).length());
 
         for (int i = 0 ; i < 10; i++) {
             items.put(new JSONObject());
         }
         Assert.assertEquals(10,
-                recommendQuery.parse(items.toString()).getJSONArray("recommend").length());
+                recommendQuery.top10Items(items.toString()).length());
     }
 
 

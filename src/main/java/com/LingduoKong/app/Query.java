@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by lingduokong on 2/21/16.
  */
-public abstract class Query {
+public class Query {
 
     final String apiKey;
     final String targetURL;
@@ -27,6 +27,7 @@ public abstract class Query {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(targetURL);
+
         for (Map.Entry<String, String> entry : urlParameters.entrySet()) {
             stringBuilder.append(entry.getKey() + "=" + entry.getValue() + "&");
         }
@@ -40,7 +41,5 @@ public abstract class Query {
 
         return response.body().string();
     }
-
-    public abstract JSONObject parse(String response);
 
 }

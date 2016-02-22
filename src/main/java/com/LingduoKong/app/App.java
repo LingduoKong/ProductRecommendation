@@ -6,15 +6,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.*;
 
-public class App 
-{
-//    public static void main(String[] args) {
-//        App app = new App();
-//        JSONObject result = app.getSearchResult("abc");
-//        long id = result.getLong("itemId");
-//        long[] ids = app.getRecommendationItemIds(id);
-//        app.rankItemsByReviews(ids);
-//    }
+public class App {
 
     final static String KEY = "vrwsuvtrns8zqzzrfgcd9hue";
     final static String SEARCH_URL = "http://api.walmartlabs.com/v1/search?";
@@ -45,15 +37,15 @@ public class App
         searchParams.put("query", itemName);
         searchParams.put("format", "json");
 
-        Query search = new SearchQuery(KEY, SEARCH_URL, searchClient);
+        SearchQuery search = new SearchQuery(KEY, SEARCH_URL, searchClient);
 
-        JSONObject item = null;
         try {
-            item = search.parse(search.query(searchParams));
+            JSONObject item = search.getFirstSearchResult(search.query(searchParams));
+            return item;
         } catch (IOException e) {
             System.out.println("No related item!");
         }
-        return item;
+        return null;
     }
 
     /**
@@ -66,14 +58,18 @@ public class App
         HashMap<String, String> recommendationParams = new HashMap<>();
         recommendationParams.put("itemId",String.valueOf(productID));
 
-        Query recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, recommendClient);
+        RecommendationQuery recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, recommendClient);
         try {
             String result = recommendQuery.query(recommendationParams);
-            JSONObject items = recommendQuery.parse(result);
-            JSONArray array = items.getJSONArray("recommend");
-            long[] ids = new long[array.length()];
-            for (int i = 0; i < array.length(); i++) {
-                ids[i] = array.getJSONObject(i).getLong("itemId");
+            JSONArray items = recommendQuery.top10Items(result);
+
+            if (items == null) {
+                return null;
+            }
+
+            long[] ids = new long[items.length()];
+            for (int i = 0; i < items.length(); i++) {
+                ids[i] = items.getJSONObject(i).getLong("itemId");
             }
             return ids;
         } catch (IOException e) {
@@ -88,18 +84,23 @@ public class App
      * @param reviewClient is a http client, open for multithreaded implementation
      * @return a JSON object with all review details of the item
      */
-    private JSONObject getReviews(long productID, OkHttpClient reviewClient) {
+    private JSONObject getReviewStats(long productID, OkHttpClient reviewClient) {
         HashMap<String, String> reviewParams = new HashMap<>();
         reviewParams.put("format", "json");
 
-        Query reviewQuery = new ReviewQuery(KEY, REVIEW_URL + productID + "?", reviewClient);
+        ReviewQuery reviewQuery = new ReviewQuery(KEY, REVIEW_URL + productID + "?", reviewClient);
         try {
             String result = reviewQuery.query(reviewParams);
-            JSONObject parseResult = reviewQuery.parse(result);
-            parseResult.put("itemId", productID);
-            return parseResult;
+            JSONObject reviewStats = reviewQuery.getReviewStats(result);
+
+            if (reviewStats == null) {
+                return null;
+            }
+
+            return reviewStats;
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No review.");
         }
         return null;
     }
@@ -108,8 +109,12 @@ public class App
 
         ArrayList<JSONObject> items = new ArrayList<>();
 
+        OkHttpClient client = new OkHttpClient();
         for (long id : ids) {
-            JSONObject reviewObject = getReviews(id, new OkHttpClient());
+            JSONObject reviewObject = getReviewStats(id, client);
+            if (reviewObject == null) {
+                continue;
+            }
             items.add(reviewObject);
         }
 

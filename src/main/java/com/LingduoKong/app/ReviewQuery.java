@@ -13,8 +13,7 @@ public class ReviewQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    @Override
-    public JSONObject parse(String response) {
+    public JSONObject getReviewStats(String response) {
         JSONObject reviewResult;
 
         try {

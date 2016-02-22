@@ -3,7 +3,6 @@ package com.LingduoKong.app;
 import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by lingduokong on 2/21/16.
@@ -14,8 +13,7 @@ public class RecommendationQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    @Override
-    public JSONObject parse(String response) {
+    public JSONArray top10Items(String response) {
 
         JSONArray items;
         try {
@@ -34,8 +32,6 @@ public class RecommendationQuery extends Query {
             result.put(items.get(i));
         }
 
-        JSONObject object = new JSONObject();
-        object.put("recommend", result);
-        return object;
+        return result;
     }
 }
