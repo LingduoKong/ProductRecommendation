@@ -1,6 +1,7 @@
 package com.LingduoKong.app;
 
 import com.squareup.okhttp.OkHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -14,9 +15,20 @@ public class ReviewQuery extends Query {
 
     @Override
     public JSONObject parse(String response) {
-        JSONObject reviewResult = new JSONObject(response);
+        JSONObject reviewResult;
+
+        try {
+            reviewResult = new JSONObject(response);
+        } catch (JSONException e) {
+            return null;
+        }
+
+        if (!reviewResult.has("name")) {
+            return null;
+        }
 
         JSONObject result;
+
         if (reviewResult.has("reviewStatistics")) {
             result = reviewResult.getJSONObject("reviewStatistics");
         } else {
@@ -24,6 +36,7 @@ public class ReviewQuery extends Query {
             result.put("totalReviewCount", 0);
             result.put("averageOverallRating", -1.0);
         }
+
         result.put("name", reviewResult.getString("name"));
         return result;
     }

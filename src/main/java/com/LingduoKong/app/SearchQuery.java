@@ -2,6 +2,7 @@ package com.LingduoKong.app;
 
 import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,15 +17,25 @@ public class SearchQuery extends Query {
     @Override
     public JSONObject parse(String response) {
 
-        JSONObject jsonObject = new JSONObject(response);
+        JSONObject jsonObject;
+
+        try {
+            jsonObject = new JSONObject(response);
+        } catch (JSONException e) {
+            return null;
+        }
+
+        if (!jsonObject.has("items")) {
+            return null;
+        }
 
         JSONArray items = jsonObject.getJSONArray("items");
 
-        if (items.length() > 0) {
-            return items.getJSONObject(0);
+        if (items.length() == 0) {
+            return null;
         }
 
-        return null;
+        return items.getJSONObject(0);
     }
 
 }

@@ -2,6 +2,7 @@ package com.LingduoKong.app;
 
 import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,7 +17,16 @@ public class RecommendationQuery extends Query {
     @Override
     public JSONObject parse(String response) {
 
-        JSONArray items = new JSONArray(response);
+        JSONArray items;
+        try {
+            items = new JSONArray(response);
+        } catch (JSONException e) {
+            return null;
+        }
+
+        if (items.length() == 0) {
+            return null;
+        }
 
         JSONArray result = new JSONArray();
 

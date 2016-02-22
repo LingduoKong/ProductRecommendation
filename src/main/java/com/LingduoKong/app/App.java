@@ -8,18 +8,18 @@ import java.util.*;
 
 public class App 
 {
-    public static void main(String[] args) {
-        App app = new App();
-        JSONObject result = app.getSearchResult("ipod");
-        long id = result.getLong("itemId");
-        long[] ids = app.getRecommendationItemIds(id);
-        app.rankItemsByReviews(ids);
-    }
+//    public static void main(String[] args) {
+//        App app = new App();
+//        JSONObject result = app.getSearchResult("abc");
+//        long id = result.getLong("itemId");
+//        long[] ids = app.getRecommendationItemIds(id);
+//        app.rankItemsByReviews(ids);
+//    }
 
-    final String KEY = "vrwsuvtrns8zqzzrfgcd9hue";
-    final String SEARCH_URL = "http://api.walmartlabs.com/v1/search?";
-    final String RECOMMENDATION_URL = "http://api.walmartlabs.com/v1/nbp?";
-    final String REVIEW_URL = "http://api.walmartlabs.com/v1/reviews/";
+    final static String KEY = "vrwsuvtrns8zqzzrfgcd9hue";
+    final static String SEARCH_URL = "http://api.walmartlabs.com/v1/search?";
+    final static String RECOMMENDATION_URL = "http://api.walmartlabs.com/v1/nbp?";
+    final static String REVIEW_URL = "http://api.walmartlabs.com/v1/reviews/";
 
     OkHttpClient searchClient;
     OkHttpClient recommendClient;
@@ -51,7 +51,7 @@ public class App
         try {
             item = search.parse(search.query(searchParams));
         } catch (IOException e) {
-            System.out.println("No such item!");
+            System.out.println("No related item!");
         }
         return item;
     }
@@ -77,7 +77,7 @@ public class App
             }
             return ids;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No recommendation for this item!");
         }
         return null;
     }
