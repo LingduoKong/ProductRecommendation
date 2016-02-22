@@ -10,6 +10,10 @@ This is a product recommendation system based on Walmart Open API.
 - $ mvn clean compile assembly:single
 - $ java -cp target/walmart-recommendation-1.0-SNAPSHOT-jar-with-dependencies.jar com.LingduoKong.app.Main
 
+### How to test
+
+
+
 ### Work flow
 
 - Get user keyword by command line and search result from API
@@ -17,4 +21,9 @@ This is a product recommendation system based on Walmart Open API.
 - Get all recommendation items based on the A
 - Choose top 10 items related to A
 - Sort these items according to user review
+
+### Over view
+
+- Create a Query class as parent for all http query.
+- Use OkHttpClint to handle api auery.
 
