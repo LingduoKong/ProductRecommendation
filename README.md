@@ -22,6 +22,11 @@ This is a product recommendation system based on Walmart Open API.
 - Choose top 10 items related to A
 - Sort these items according to user review
 
+### Summary 
+
+- It runs slowly for getting recommendations.
+- Multithreaded API query should be added to speed up the recommendation process.
+
 ### Over view
 
 - Created a Query class as parent for all http query.
@@ -32,3 +37,4 @@ This is a product recommendation system based on Walmart Open API.
 - Then search the most related item by search query.
 - Get top 10 recommended items by recommendation query.
 - Finally, use items' average review rate and review count to rank them
+
