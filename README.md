@@ -28,7 +28,6 @@ This is a product recommendation system based on Walmart Open API.
 - Used OkHttpClint to handle api query.
 - Built three subclasses for search, get recommendation items and get review stats.
 - Created app class to handle work flow.
-
 - First get the key word.
 - Then search the most related item by search query.
 - Get top 10 recommended items by recommendation query.
