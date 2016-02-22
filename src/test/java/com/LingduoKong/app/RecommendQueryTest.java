@@ -13,31 +13,23 @@ import org.junit.Test;
  */
 public class RecommendQueryTest extends TestCase {
 
-    RecommendationQuery recommendQuery;
-
-    @Before
-    public void setUp() throws Exception {
-        recommendQuery = new RecommendationQuery(App.KEY,
-                App.RECOMMENDATION_URL, new OkHttpClient());
-    }
-
     @Test
     public void testParse() throws Exception {
         JSONArray test1 = new JSONArray();
-        Assert.assertEquals(null, recommendQuery.top10Items(test1.toString()));
+        Assert.assertEquals(null, RecommendationQuery.top10Items(test1.toString()));
         JSONArray items = new JSONArray();
-        Assert.assertEquals(null, recommendQuery.top10Items(items.toString()));
+        Assert.assertEquals(null, RecommendationQuery.top10Items(items.toString()));
         for (int i = 0; i < 5; i++) {
             items.put(new JSONObject());
         }
         Assert.assertEquals(items.length(),
-                recommendQuery.top10Items(items.toString()).length());
+                RecommendationQuery.top10Items(items.toString()).length());
 
         for (int i = 0 ; i < 10; i++) {
             items.put(new JSONObject());
         }
         Assert.assertEquals(10,
-                recommendQuery.top10Items(items.toString()).length());
+                RecommendationQuery.top10Items(items.toString()).length());
     }
 
 

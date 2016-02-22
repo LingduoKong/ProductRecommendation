@@ -12,20 +12,13 @@ import org.junit.Test;
  */
 public class ReviewQueryTest extends TestCase {
 
-    ReviewQuery reviewQuery;
-
-    @Before
-    public void setUp() throws Exception {
-        reviewQuery = new ReviewQuery(App.KEY, App.REVIEW_URL, new OkHttpClient());
-    }
-
     @Test
     public void testParse() throws Exception {
-        Assert.assertEquals(null, reviewQuery.getReviewStats("abcde"));
+        Assert.assertEquals(null, ReviewQuery.getReviewStats("abcde"));
         JSONObject review = new JSONObject();
-        Assert.assertEquals(null, reviewQuery.getReviewStats(review.toString()));
+        Assert.assertEquals(null, ReviewQuery.getReviewStats(review.toString()));
         review.put("name", "itemName");
-        Assert.assertEquals(reviewQuery.getReviewStats(review.toString()).toString(),
+        Assert.assertEquals(ReviewQuery.getReviewStats(review.toString()).toString(),
                 review.put("totalReviewCount", 0).put("averageOverallRating",-1.0).toString());
 
 
@@ -38,6 +31,6 @@ public class ReviewQueryTest extends TestCase {
 
         review.put("totalReviewCount", 100);
         review.put("averageOverallRating", 4.45);
-        Assert.assertEquals(review.toString(), reviewQuery.getReviewStats(review2.toString()).toString());
+        Assert.assertEquals(review.toString(), ReviewQuery.getReviewStats(review2.toString()).toString());
     }
 }

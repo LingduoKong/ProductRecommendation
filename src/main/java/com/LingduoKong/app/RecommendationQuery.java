@@ -13,7 +13,7 @@ public class RecommendationQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    public JSONArray top10Items(String response) {
+    public static JSONArray top10Items(String response) {
 
         JSONArray items;
         try {

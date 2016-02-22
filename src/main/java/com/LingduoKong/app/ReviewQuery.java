@@ -13,7 +13,7 @@ public class ReviewQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    public JSONObject getReviewStats(String response) {
+    public static JSONObject getReviewStats(String response) {
         JSONObject reviewResult;
 
         try {

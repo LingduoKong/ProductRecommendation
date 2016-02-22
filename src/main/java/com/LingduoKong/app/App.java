@@ -40,7 +40,7 @@ public class App {
         SearchQuery search = new SearchQuery(KEY, SEARCH_URL, searchClient);
 
         try {
-            JSONObject item = search.getFirstSearchResult(search.query(searchParams));
+            JSONObject item = SearchQuery.getFirstSearchResult(search.query(searchParams));
             return item;
         } catch (IOException e) {
             System.out.println("No related item!");
@@ -61,7 +61,7 @@ public class App {
         RecommendationQuery recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, recommendClient);
         try {
             String result = recommendQuery.query(recommendationParams);
-            JSONArray items = recommendQuery.top10Items(result);
+            JSONArray items = RecommendationQuery.top10Items(result);
 
             if (items == null) {
                 return null;
@@ -91,7 +91,7 @@ public class App {
         ReviewQuery reviewQuery = new ReviewQuery(KEY, REVIEW_URL + productID + "?", reviewClient);
         try {
             String result = reviewQuery.query(reviewParams);
-            JSONObject reviewStats = reviewQuery.getReviewStats(result);
+            JSONObject reviewStats = ReviewQuery.getReviewStats(result);
 
             if (reviewStats == null) {
                 return null;
@@ -140,6 +140,8 @@ public class App {
                 }
             }
         });
+
+        System.out.println("Recommendation Result:");
 
         for (JSONObject item : items) {
             System.out.print(item.getString("name"));

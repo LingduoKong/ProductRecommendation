@@ -14,7 +14,7 @@ public class SearchQuery extends Query {
         super(apiKey, targetURL, client);
     }
 
-    public JSONObject getFirstSearchResult(String response) {
+    public static JSONObject getFirstSearchResult(String response) {
 
         JSONObject jsonObject;
 
