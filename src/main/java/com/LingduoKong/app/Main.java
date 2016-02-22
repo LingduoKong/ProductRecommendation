@@ -19,11 +19,17 @@ public class Main {
         }
         System.out.println("Searching results, please wait...\n\n");
 
+        long startTime = System.currentTimeMillis();
+
         App app = new App();
         JSONObject result = app.getSearchResult(keyWord);
         long id = result.getLong("itemId");
         long[] ids = app.getRecommendationItemIds(id);
         app.rankItemsByReviews(ids);
+
+        long endTime   = System.currentTimeMillis();
+        System.out.println(endTime - startTime);
+
     }
 
 }

@@ -13,16 +13,14 @@ public class App {
     final static String RECOMMENDATION_URL = "http://api.walmartlabs.com/v1/nbp?";
     final static String REVIEW_URL = "http://api.walmartlabs.com/v1/reviews/";
 
-    OkHttpClient searchClient;
-    OkHttpClient recommendClient;
+    OkHttpClient httpClient;
 
     /**
      * Entrance of the application.
      *
      */
     public App() {
-        searchClient = new OkHttpClient();
-        recommendClient = new OkHttpClient();
+        httpClient = new OkHttpClient();
     }
 
     /**
@@ -37,7 +35,7 @@ public class App {
         searchParams.put("query", itemName);
         searchParams.put("format", "json");
 
-        SearchQuery search = new SearchQuery(KEY, SEARCH_URL, searchClient);
+        SearchQuery search = new SearchQuery(KEY, SEARCH_URL, httpClient);
 
         try {
             JSONObject item = SearchQuery.getFirstSearchResult(search.query(searchParams));
@@ -58,7 +56,7 @@ public class App {
         HashMap<String, String> recommendationParams = new HashMap<>();
         recommendationParams.put("itemId",String.valueOf(productID));
 
-        RecommendationQuery recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, recommendClient);
+        RecommendationQuery recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, httpClient);
         try {
             String result = recommendQuery.query(recommendationParams);
             JSONArray items = RecommendationQuery.top10Items(result);
@@ -105,13 +103,18 @@ public class App {
         return null;
     }
 
+    /**
+     * rank items by their review stats
+     * if no review, the score will be marked as -1 and last recommended
+     * @param ids is an array with all items' id we want to rank
+     * @return a list of json objects has been ranked by average score
+     */
     public List<JSONObject> rankItemsByReviews(long[] ids) {
 
         ArrayList<JSONObject> items = new ArrayList<>();
 
-        OkHttpClient client = new OkHttpClient();
         for (long id : ids) {
-            JSONObject reviewObject = getReviewStats(id, client);
+            JSONObject reviewObject = getReviewStats(id, httpClient);
             if (reviewObject == null) {
                 continue;
             }
