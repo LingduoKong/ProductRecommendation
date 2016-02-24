@@ -100,6 +100,37 @@ public class App {
         return null;
     }
 
+    public List<JSONObject> getAllStatsOfReviews(long[] ids) {
+        List<JSONObject> items = new ArrayList<>();
+        for (long id : ids) {
+            JSONObject reviewObject = getReviewStats(id, httpClient);
+            if (reviewObject == null) {
+                continue;
+            }
+            items.add(reviewObject);
+        }
+        return items;
+    }
+
+    public List<JSONObject> getAllStatsOfReviewsAsynchronous(long[] ids) {
+        RequestController controller = new RequestController();
+        for (long id : ids) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("format", "json");
+            params.put("apiKey", KEY);
+            String baseUrl = REVIEW_URL + id + "?";
+            String fullUrl = URLGenerator.generaeteUrl(baseUrl, params);
+            controller.addTask(fullUrl);
+        }
+        List<String> list = controller.getData();
+        List<JSONObject> items = new ArrayList<>();
+        for (String obj : list) {
+            JSONObject object = ReviewParser.getReviewStats(obj);
+            items.add(object);
+        }
+        return items;
+    }
+
     /**
      * rank items by their review stats
      * if no review, the score will be marked as -1 and last recommended
@@ -108,31 +139,7 @@ public class App {
      */
     public List<JSONObject> rankItemsByReviews(long[] ids) {
 
-        ArrayList<JSONObject> items = new ArrayList<>();
-
-        RequestController controller = new RequestController();
-        for (long id : ids) {
-            HashMap<String, String> params = new HashMap<>();
-            params.put("format", "json");
-            params.put("apiKey", KEY);
-
-            String baseUrl = REVIEW_URL + id + "?";
-            String fullUrl = URLGenerator.generaeteUrl(baseUrl, params);
-            controller.addTask(fullUrl);
-        }
-        List<String> list = controller.getData();
-        for (String obj : list) {
-            JSONObject object = ReviewParser.getReviewStats(obj);
-            items.add(object);
-        }
-
-//        for (long id : ids) {
-//            JSONObject reviewObject = getReviewStats(id, httpClient);
-//            if (reviewObject == null) {
-//                continue;
-//            }
-//            items.add(reviewObject);
-//        }
+        List<JSONObject> items = getAllStatsOfReviewsAsynchronous(ids);
 
         Collections.sort(items, new Comparator<JSONObject>() {
             @Override
