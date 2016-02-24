@@ -13,27 +13,7 @@ import java.util.Map;
  */
 public class Query {
 
-    final String apiKey;
-    final String targetURL;
-    private OkHttpClient client;
-
-    public Query(String apiKey, String targetURL, OkHttpClient client) {
-        this.apiKey = apiKey;
-        this.targetURL = targetURL;
-        this.client = client;
-    }
-
-    public String query(HashMap<String, String> urlParameters) throws IOException {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(targetURL);
-
-        for (Map.Entry<String, String> entry : urlParameters.entrySet()) {
-            stringBuilder.append(entry.getKey() + "=" + entry.getValue() + "&");
-        }
-        stringBuilder.append("apiKey=" + apiKey);
-
-        String url = stringBuilder.toString();
+    public static String query(String url, OkHttpClient client) throws IOException {
 
         Request request = new Request.Builder().url(url).build();
 

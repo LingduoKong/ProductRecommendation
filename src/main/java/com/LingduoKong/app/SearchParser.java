@@ -1,6 +1,5 @@
 package com.LingduoKong.app;
 
-import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,11 +7,7 @@ import org.json.JSONObject;
 /**
  * Created by lingduokong on 2/21/16.
  */
-public class SearchQuery extends Query {
-
-    public SearchQuery(String apiKey, String targetURL, OkHttpClient client) {
-        super(apiKey, targetURL, client);
-    }
+public class SearchParser {
 
     public static JSONObject getFirstSearchResult(String response) {
 

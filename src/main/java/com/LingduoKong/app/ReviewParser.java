@@ -7,11 +7,7 @@ import org.json.JSONObject;
 /**
  * Created by lingduokong on 2/21/16.
  */
-public class ReviewQuery extends Query {
-
-    public ReviewQuery(String apiKey, String targetURL, OkHttpClient client) {
-        super(apiKey, targetURL, client);
-    }
+public class ReviewParser {
 
     public static JSONObject getReviewStats(String response) {
         JSONObject reviewResult;

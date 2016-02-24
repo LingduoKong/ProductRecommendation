@@ -34,12 +34,12 @@ public class App {
         HashMap<String, String> searchParams = new HashMap<>();
         searchParams.put("query", itemName);
         searchParams.put("format", "json");
+        searchParams.put("apiKey", KEY);
 
-        SearchQuery search = new SearchQuery(KEY, SEARCH_URL, httpClient);
+        String url = URLGenerator.generaeteUrl(SEARCH_URL,searchParams);
 
         try {
-            JSONObject item = SearchQuery.getFirstSearchResult(search.query(searchParams));
-            return item;
+            return SearchParser.getFirstSearchResult(Query.query(url, httpClient));
         } catch (IOException e) {
             System.out.println("No related item!");
         }
@@ -55,11 +55,12 @@ public class App {
 
         HashMap<String, String> recommendationParams = new HashMap<>();
         recommendationParams.put("itemId",String.valueOf(productID));
+        recommendationParams.put("apiKey", KEY);
+        String url = URLGenerator.generaeteUrl(RECOMMENDATION_URL, recommendationParams);
 
-        RecommendationQuery recommendQuery = new RecommendationQuery(KEY, RECOMMENDATION_URL, httpClient);
         try {
-            String result = recommendQuery.query(recommendationParams);
-            JSONArray items = RecommendationQuery.top10Items(result);
+            String result = Query.query(url, httpClient);
+            JSONArray items = RecommendationParser.top10Items(result);
 
             if (items == null) {
                 return null;
@@ -78,24 +79,20 @@ public class App {
 
     /**
      * get review stats of a product
-     * @param productID is the id of the item
+     * @param id is the id of the item
      * @param reviewClient is a http client, open for multithreaded implementation
      * @return a JSON object with all review details of the item
      */
-    private JSONObject getReviewStats(long productID, OkHttpClient reviewClient) {
+    private JSONObject getReviewStats(long id, OkHttpClient reviewClient) {
         HashMap<String, String> reviewParams = new HashMap<>();
         reviewParams.put("format", "json");
+        reviewParams.put("apiKey", KEY);
 
-        ReviewQuery reviewQuery = new ReviewQuery(KEY, REVIEW_URL + productID + "?", reviewClient);
+        String url = URLGenerator.generaeteUrl(REVIEW_URL + id + "?", reviewParams);
+
         try {
-            String result = reviewQuery.query(reviewParams);
-            JSONObject reviewStats = ReviewQuery.getReviewStats(result);
-
-            if (reviewStats == null) {
-                return null;
-            }
-
-            return reviewStats;
+            String result = Query.query(url, httpClient);
+            return ReviewParser.getReviewStats(result);
 
         } catch (IOException e) {
             System.out.println("No review.");
@@ -113,13 +110,29 @@ public class App {
 
         ArrayList<JSONObject> items = new ArrayList<>();
 
+        RequestController controller = new RequestController();
         for (long id : ids) {
-            JSONObject reviewObject = getReviewStats(id, httpClient);
-            if (reviewObject == null) {
-                continue;
-            }
-            items.add(reviewObject);
+            HashMap<String, String> params = new HashMap<>();
+            params.put("format", "json");
+            params.put("apiKey", KEY);
+
+            String baseUrl = REVIEW_URL + id + "?";
+            String fullUrl = URLGenerator.generaeteUrl(baseUrl, params);
+            controller.addTask(fullUrl);
         }
+        List<String> list = controller.getData();
+        for (String obj : list) {
+            JSONObject object = ReviewParser.getReviewStats(obj);
+            items.add(object);
+        }
+
+//        for (long id : ids) {
+//            JSONObject reviewObject = getReviewStats(id, httpClient);
+//            if (reviewObject == null) {
+//                continue;
+//            }
+//            items.add(reviewObject);
+//        }
 
         Collections.sort(items, new Comparator<JSONObject>() {
             @Override
@@ -154,5 +167,4 @@ public class App {
 
         return items;
     }
-
 }

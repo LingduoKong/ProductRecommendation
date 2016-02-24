@@ -1,17 +1,12 @@
 package com.LingduoKong.app;
 
-import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
  * Created by lingduokong on 2/21/16.
  */
-public class RecommendationQuery extends Query {
-
-    public RecommendationQuery(String apiKey, String targetURL, OkHttpClient client) {
-        super(apiKey, targetURL, client);
-    }
+public class RecommendationParser {
 
     public static JSONArray top10Items(String response) {
 
